@@ -1,0 +1,52 @@
+{% load static %}
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Гостевая книга — Отзывы</title>
+    <link rel="stylesheet" href="{% static 'reviews/style.css' %}">
+  </head>
+  <body>
+    <main>
+      <h1>Гостевая книга</h1>
+
+      <form method="post" action="{% url 'reviews:review_list' %}" class="review-form">
+        {% csrf_token %}
+        <div class="form-group">
+          {{ form.author.label_tag }}
+          {{ form.author }}
+          {{ form.author.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.text.label_tag }}
+          {{ form.text }}
+          {{ form.text.errors }}
+        </div>
+
+        {{ form.non_field_errors }}
+        <button type="submit">Оставить отзыв</button>
+      </form>
+
+      <h2>Все отзывы</h2>
+      <ul class="reviews">
+        {% for review in reviews %}
+          <li class="review-item">
+            <div class="review-header">
+              <strong class="review-author">{{ review.author }}</strong>
+              <time class="review-date">{{ review.created_at|date:"d.m.Y H:i" }}</time>
+            </div>
+            <div class="review-text">{{ review.text }}</div>
+          </li>
+        {% empty %}
+          <li class="empty">Пока нет отзывов. Будьте первым!</li>
+        {% endfor %}
+      </ul>
+
+      <p class="admin-link">
+        <a href="{% url 'admin:reviews_review_changelist' %}">Управление отзывами в админке</a>
+      </p>
+    </main>
+  </body>
+</html>
